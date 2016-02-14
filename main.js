@@ -1,12 +1,12 @@
 
+/*event click to send file image */
 var set = document.getElementById('set'), imgFile = document.getElementById('imgFile');
-
 set.addEventListener('click', function(e) {
 	if (imgFile.files.length > 0) 
 		ic.handle(imgFile);
 }, false);
 
-/*populate select with array*/
+/* populate select with array */
 var sel = document.getElementById('type'), opts = ['Kanit', 'Oswald', 'Quicksand', 'Trochut', 'Vast Shadow'];
 for (var i in opts) {
 	var opt = document.createElement('option');
@@ -15,7 +15,7 @@ for (var i in opts) {
 	sel.appendChild(opt);
 }
 
-/* js manipule canvas :P */
+/* js manipule canvas from form :P */
 var ic = {
 	text: '',
 	canvas: '',
@@ -59,15 +59,18 @@ var ic = {
 		}
 		reader.readAsDataURL(e.files[0]);
 		if (!document.getElementById('d')) {
-			var d = document.createElement('button');
-			d.innerHTML = 'Download';
-			d.id = 'd';
-			d.className = 'form right';
-			d.onclick = function() {
-				ic.download();
-			};
+			d = ic.create({e: 'button', params:{innerHTML: 'Download', id: 'd', className: 'form right', onclick: function() {ic.download();}}});
+			document.getElementById('submit').appendChild(d);
+			d = ic.create({e: 'button', params:{innerHTML: 'Invert', id: 'i', className: 'form right', onclick: function(){invert();}}});
+			document.getElementById('submit').appendChild(d);
+			d = ic.create({e: 'button', params:{innerHTML: 'Grayscale', id: 'i', className: 'form right', onclick: function(){grayscale();}}});
 			document.getElementById('submit').appendChild(d);
 		}
+	},
+	create: function (o) {
+		var d = document.createElement(o.e);
+		for(var i in o.params) d[i] = o.params[i];
+		return d;	
 	},
 	insertText: function(x, y, maxWidth, lineHeight) {
 		var w = ic.text.split(' '),
@@ -94,6 +97,7 @@ var ic = {
 	}
 };
 
+//ads click sample
 var canvas = document.getElementById('adversitment'), ctx = canvas.getContext('2d');
 canvas.onclick = function() {
 	ctx.fillStyle = '#000';
@@ -107,6 +111,7 @@ canvas.onclick = function() {
 	ctx.fillText(txt, parseInt(h), 85);
 }
 
+//ads sample
 function simpleAdversitment() {
 	/* draw something */
 	ctx.fillStyle = '#EC6148';
@@ -121,3 +126,58 @@ function simpleAdversitment() {
 	ctx.fillText('Click Here', (canvas.width - 75), (canvas.height - 15));
 }
 simpleAdversitment();
+
+//watermark sample
+watermark = function() {
+	txt = 'This is a example of watermark';
+    wcanvas = document.getElementById('watermarked_canvas');
+    if (wcanvas.getContext) {
+        wctx = wcanvas.getContext('2d');
+        var im = new Image();
+        im.src = 'image.jpg';
+        im.onload = function() {
+            var imgWidth = im.width;
+            var imgHeight = im.height;
+            wcanvas.width = imgWidth;
+            wcanvas.height = imgHeight;
+            wctx.drawImage(im, 0, 0);
+            wctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+            wctx.font = '40px sans-serif';
+            wctx.fillText(txt, wcanvas.width - (txt.length * 15), wcanvas.height - 40);
+            wctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+            wctx.fillText(txt, wcanvas.width - (txt.length * 15) - 2, wcanvas.height - 42)
+        }
+    }
+}
+watermark()
+//invert color sample
+invert = function () {
+	var icanvas = document.getElementById('imageCanvas'),
+	ictx = icanvas.getContext('2d');
+	idata = ictx.getImageData(0,0,icanvas.width, icanvas.height);
+	for (var i = 0; i < idata.data.length; i += 4) {
+		idata.data[i] = 255 - idata.data[i];     // red
+		idata.data[i + 1] = 255 - idata.data[i + 1]; // green
+		idata.data[i + 2] = 255 - idata.data[i + 2]; // blue
+	}
+	ictx.putImageData(idata, 0, 0);
+	document.getElementById('imageCanvas').toDataURL('image/png');
+}
+//gray scale sample
+grayscale = function () {
+	var gcanvas = document.getElementById('imageCanvas'),
+	gctx = gcanvas.getContext('2d');
+	gdata = gctx.getImageData(0,0,gcanvas.width, gcanvas.height);
+	for (var i = 0; i < gdata.data.length; i += 4) {
+		var avg = (gdata.data[i] + gdata.data[i +1] + gdata.data[i +2]) / 3;
+		gdata.data[i] = avg;     // red
+		gdata.data[i + 1] = avg; // green
+		gdata.data[i + 2] = avg; // blue
+	}
+	gctx.putImageData(gdata, 0, 0);
+	document.getElementById('imageCanvas').toDataURL('image/png');
+}
+
+
+
+
