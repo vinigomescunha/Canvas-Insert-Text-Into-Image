@@ -52,7 +52,7 @@ var ic = {
 				ic.context.drawImage(img, 0, 0);
 				ic.context.lineStyle = '#FFFFFF';
 				ic.context.font = cfont.toString(); //'30px Verdana'
-				maxWidth = img.width;console.log(fs);
+				maxWidth = img.width;
 				ic.insertText(x, y, maxWidth, lineHeight);
 			}
 			img.src = event.target.result;
