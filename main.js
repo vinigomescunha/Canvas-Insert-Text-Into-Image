@@ -65,6 +65,8 @@ var ic = {
 			document.getElementById('submit').appendChild(d);
 			d = ic.create({e: 'button', params:{innerHTML: 'Grayscale', id: 'i', className: 'form right', onclick: function(){grayscale();}}});
 			document.getElementById('submit').appendChild(d);
+			d = ic.create({e: 'button', params:{innerHTML: 'Opacity(Mark)', id: 'i', className: 'form right', onclick: function(){opacity();}}});
+			document.getElementById('submit').appendChild(d);
 		}
 	},
 	create: function (o) {
@@ -177,7 +179,26 @@ grayscale = function () {
 	gctx.putImageData(gdata, 0, 0);
 	document.getElementById('imageCanvas').toDataURL('image/png');
 }
-
-
+//opacity  sample image
+opacity = function() {
+	var ocanvas = document.getElementById("imageCanvas"),
+	octx = ocanvas.getContext("2d");
+	var img = new Image(); 
+	img.src = ocanvas.toDataURL('image/png');
+	var img1 = img;
+	if( img.complete ) {
+		octx.drawImage(img1, 0, 0);
+	} else {
+		img.addEventListener('load', function() { octx.drawImage(img1, 0, 0); } );
+	}
+	var img = new Image();img.src = "mark.png",
+	img2 = img,
+	octx.globalAlpha = 0.25;
+	if( img2.complete ) {
+		octx.drawImage(img2, 0, 0);
+	} else {
+		img.addEventListener('load', function() { octx.drawImage(img2, 0, 0); } );
+	}
+}
 
 
